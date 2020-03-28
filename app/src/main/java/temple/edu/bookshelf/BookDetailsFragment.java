@@ -30,14 +30,14 @@ public class BookDetailsFragment extends Fragment {
     // TODO: Rename and change types of parameters
 
     private Context parent;
-    private HashMap book;
+    private HashMap<String,String> book;
 
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
 
-    public static BookDetailsFragment newInstance(HashMap book) {
+    public static BookDetailsFragment newInstance(HashMap<String,String> book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
 
@@ -51,7 +51,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            book = (HashMap)getArguments().getSerializable("book");
+            book = (HashMap<String,String>)getArguments().getSerializable("book");
         }
     }
 
@@ -63,7 +63,7 @@ public class BookDetailsFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void displayBook(HashMap book) {
+    public void displayBook(HashMap<String,String> book) {
         if (parent != null) {
             ((BookDisplayListener)parent).displayBook(book);
         }
@@ -98,6 +98,6 @@ public class BookDetailsFragment extends Fragment {
      */
     public interface BookDisplayListener {
         // TODO: Update argument type and name
-        void displayBook(HashMap book);
+        void displayBook(HashMap<String,String> book);
     }
 }
