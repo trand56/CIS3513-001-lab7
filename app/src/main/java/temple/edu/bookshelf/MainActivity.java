@@ -6,7 +6,7 @@ import android.os.Bundle;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedListener, BookDetailsFragment.BookDisplayListener {
 
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
@@ -30,5 +30,16 @@ public class MainActivity extends AppCompatActivity {
             newBook.put(titles[i], i < authorslen ? authors[i] : "None");
             books.add(newBook);
         }
+    }
+
+
+    @Override
+    public void onBookSelected(int index) {
+
+    }
+
+    @Override
+    public void displayBook(HashMap book) {
+
     }
 }
