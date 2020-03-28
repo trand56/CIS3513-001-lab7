@@ -5,8 +5,23 @@
     android:layout_height="match_parent"
     tools:context=".BookListFragment">
 
-    <ListView
-        android:id="@+id/books"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/booksLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="List of Books"
+            android:textColor="@android:color/black"
+            android:textSize="28sp" />
+
+        <ListView
+            android:id="@+id/booksList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
 </FrameLayout>

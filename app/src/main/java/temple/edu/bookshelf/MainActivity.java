@@ -10,7 +10,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
-    private ArrayList<HashMap> books;
+    private ArrayList<HashMap<String,String>> books;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,13 +23,20 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         String[] authors = getResources().getStringArray(R.array.book_authors);
         int authorslen = titles.length;
 
-        books = new ArrayList<HashMap>();
-        for(int i = 0; i < titleslen; i++)
+        books = new ArrayList<HashMap<String,String>>();
+        for(int i = 0; i < titleslen && i < authorslen; i++)
         {
             HashMap<String, String> newBook = new HashMap<String, String>();
-            newBook.put(titles[i], i < authorslen ? authors[i] : "None");
-            books.add(newBook);
+            newBook.put("title", titles[i]);
+            newBook.put("author", authors[i]);
         }
+
+        BookListFragment booksFrag = BookListFragment.newInstance(books);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.container1, booksFrag)
+                .commit();
+
     }
 
 
