@@ -1,3 +1,32 @@
 <resources>
     <string name="app_name">BookShelf</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="book_titles">
+        <item>Title AAA</item>
+        <item>Title BBB</item>
+        <item>Title CCC</item>
+        <item>Title DDD</item>
+        <item>Title EEE</item>
+        <item>Title FFF</item>
+        <item>Title GGG</item>
+        <item>Title HHH</item>
+        <item>Title III</item>
+        <item>Title JJJ</item>
+    </string-array>
+
+    <string-array name="book_authors">
+        <item>Andy</item>
+        <item>Bobby</item>
+        <item>Cindy</item>
+        <item>Donny</item>
+        <item>Endy</item>
+        <item>Foddy</item>
+        <item>Gary</item>
+        <item>Harry</item>
+        <item>Ingrid</item>
+        <item>Jerry</item>
+    </string-array>
 </resources>
