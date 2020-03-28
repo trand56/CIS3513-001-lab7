@@ -1,6 +1,7 @@
 package temple.edu.bookshelf;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,19 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BookListFragment.BookSelectedListener} interface
+ * {@link BookDetailsFragment.BookDisplayListener} interface
  * to handle interaction events.
- * Use the {@link BookListFragment#newInstance} factory method to
+ * Use the {@link BookDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BookListFragment extends Fragment {
+public class BookDetailsFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -30,22 +30,18 @@ public class BookListFragment extends Fragment {
     // TODO: Rename and change types of parameters
 
     private Context parent;
+    private HashMap book;
 
-    private int length;
-    private ArrayList<HashMap> books;
-
-    public BookListFragment() {
+    public BookDetailsFragment() {
         // Required empty public constructor
     }
 
-    public static BookListFragment newInstance(ArrayList<HashMap> books) {
-        BookListFragment fragment = new BookListFragment();
+
+    public static BookDetailsFragment newInstance(HashMap book) {
+        BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
 
-        int len = books.size();
-
-        args.putInt("length", len);
-        args.putSerializable("books", books);
+        args.putSerializable("book", book);
 
         fragment.setArguments(args);
         return fragment;
@@ -55,8 +51,7 @@ public class BookListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            length = getArguments().getInt("length");
-            books = (ArrayList<HashMap>)getArguments().getSerializable("books");
+            book = (HashMap)getArguments().getSerializable("book");
         }
     }
 
@@ -64,20 +59,20 @@ public class BookListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_list, container, false);
+        return inflater.inflate(R.layout.fragment_book_details, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void selectBook(String title) {
+    public void displayBook(HashMap book) {
         if (parent != null) {
-            ((BookSelectedListener)parent).onBookSelected(title);
+            ((BookDisplayListener)parent).displayBook(book);
         }
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof BookSelectedListener) {
+        if (context instanceof BookDisplayListener) {
             parent = context;
         } else {
             throw new RuntimeException(context.toString()
@@ -101,8 +96,8 @@ public class BookListFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface BookSelectedListener {
+    public interface BookDisplayListener {
         // TODO: Update argument type and name
-        void onBookSelected(String title);
+        void displayBook(HashMap book);
     }
 }
