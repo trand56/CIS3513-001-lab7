@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.HashMap;
 
@@ -16,7 +17,6 @@ import java.util.HashMap;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link BookDetailsFragment.BookDisplayListener} interface
  * to handle interaction events.
  * Use the {@link BookDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -30,7 +30,7 @@ public class BookDetailsFragment extends Fragment {
     // TODO: Rename and change types of parameters
 
     private Context parent;
-    private HashMap<String,String> book;
+    private HashMap<String,String> book = null;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -59,45 +59,34 @@ public class BookDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_book_details, container, false);
+        View layout = inflater.inflate(R.layout.fragment_book_details, container, false);
+        TextView titleText = layout.findViewById(R.id.title);
+        TextView authorText = layout.findViewById(R.id.author);
+        if(book != null){
+            titleText.setText(book.get("title"));
+            authorText.setText(book.get("author"));
+        }
+        else{
+            titleText.setText("No book selected");
+            authorText.setText("No book selected");
+        }
+        return layout;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void displayBook(HashMap<String,String> book) {
-        if (parent != null) {
-            ((BookDisplayListener)parent).displayBook(book);
-        }
+        this.book = book;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof BookDisplayListener) {
-            parent = context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+        parent = context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         parent = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface BookDisplayListener {
-        // TODO: Update argument type and name
-        void displayBook(HashMap<String,String> book);
     }
 }

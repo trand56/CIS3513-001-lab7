@@ -7,11 +7,11 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedListener, BookDetailsFragment.BookDisplayListener {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedListener {
 
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
-    private ArrayList<HashMap<String,String>> books;
+    private ArrayList<HashMap<String, String>> books;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,9 +24,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         String[] authors = getResources().getStringArray(R.array.book_authors);
         int authorslen = titles.length;
 
-        books = new ArrayList<HashMap<String,String>>();
-        for(int i = 0; i < titleslen && i < authorslen; i++)
-        {
+        books = new ArrayList<HashMap<String, String>>();
+        for (int i = 0; i < titleslen && i < authorslen; i++) {
             HashMap<String, String> newBook = new HashMap<String, String>();
             newBook.put("title", titles[i]);
             newBook.put("author", authors[i]);
@@ -44,11 +43,19 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void onBookSelected(int index) {
-
-    }
-
-    @Override
-    public void displayBook(HashMap book) {
-
+        BookDetailsFragment detailFrag = BookDetailsFragment.newInstance(books.get(index));
+        detailFrag.displayBook(books.get(index));
+        if (findViewById(R.id.container2) == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container1, detailFrag)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container2, detailFrag)
+                    .commit();
+        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -34,7 +35,7 @@ public class BookListFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
 
-    private Context parent;
+    private Context parentContext;
 
     private int length;
     private ArrayList<HashMap<String,String>> books;
@@ -74,8 +75,16 @@ public class BookListFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_book_list, container, false);
 
         ListView booklistview = layout.findViewById(R.id.booksList);
-        BookListAdapter adapter = new BookListAdapter(parent, books);
+        BookListAdapter adapter = new BookListAdapter(parentContext, books);
         booklistview.setAdapter(adapter);
+
+        booklistview.setOnItemClickListener(new ListView.OnItemClickListener(
+        ) {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ((BookSelectedListener)parentContext).onBookSelected(position);
+            }
+        });
 
         return layout;
     }
@@ -84,7 +93,7 @@ public class BookListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof BookSelectedListener) {
-            parent = context;
+            parentContext = context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -94,7 +103,7 @@ public class BookListFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        parent = null;
+        parentContext = null;
     }
 
     /**
