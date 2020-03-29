@@ -12,6 +12,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
     private ArrayList<HashMap<String, String>> books;
+    private BookListFragment booksFrag;
+    private BookDetailsFragment detailFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,29 +34,38 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             books.add(newBook);
         }
 
-        BookListFragment booksFrag = BookListFragment.newInstance(books);
+        booksFrag = BookListFragment.newInstance(books);
+        detailFrag = BookDetailsFragment.newInstance(books.get(0));
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.container1, booksFrag)
                 .commit();
+        if(findViewById(R.id.container2) != null)
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container2, detailFrag)
+                    .commit();
 
     }
 
 
     @Override
     public void onBookSelected(int index) {
-        BookDetailsFragment detailFrag = BookDetailsFragment.newInstance(books.get(index));
-        detailFrag.displayBook(books.get(index));
+
         if (findViewById(R.id.container2) == null) {
+            BookDetailsFragment newDetail = BookDetailsFragment.newInstance(books.get(index));
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container1, detailFrag)
+                    .replace(R.id.container1, newDetail)
                     .addToBackStack(null)
                     .commit();
         } else {
+            detailFrag.displayBook(books.get(index));
             getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.container2, detailFrag)
+                    .detach(detailFrag)
+                    .attach(detailFrag)
                     .commit();
         }
     }

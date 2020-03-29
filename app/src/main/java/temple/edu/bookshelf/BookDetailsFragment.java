@@ -58,6 +58,7 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        System.out.println("CREATE VIEW");
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_book_details, container, false);
         TextView titleText = layout.findViewById(R.id.title);
@@ -74,8 +75,9 @@ public class BookDetailsFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void displayBook(HashMap<String,String> book) {
-        this.book = book;
+    public void displayBook(HashMap<String,String> b) {
+        System.out.println("TITLE AUTHOR " + b.get("title") + ", " + b.get("author") );
+        book = b;
     }
 
     @Override
