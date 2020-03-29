@@ -2,6 +2,7 @@ package temple.edu.bookshelf;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             HashMap<String, String> newBook = new HashMap<String, String>();
             newBook.put("title", titles[i]);
             newBook.put("author", authors[i]);
+            books.add(newBook);
         }
 
         BookListFragment booksFrag = BookListFragment.newInstance(books);

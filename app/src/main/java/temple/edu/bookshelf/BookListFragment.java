@@ -8,6 +8,11 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +51,6 @@ public class BookListFragment extends Fragment {
 
         args.putInt("length", len);
         args.putSerializable("books", books);
-
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,6 +61,7 @@ public class BookListFragment extends Fragment {
         if (getArguments() != null) {
             length = getArguments().getInt("length");
             books = (ArrayList<HashMap<String,String>>)getArguments().getSerializable("books");
+
         }
     }
 
@@ -66,8 +71,13 @@ public class BookListFragment extends Fragment {
         // Inflate the layout for this fragment
 
         // TODO: add event listener to listview entries that call parent and pass in its book index
+        View layout = inflater.inflate(R.layout.fragment_book_list, container, false);
 
-        return inflater.inflate(R.layout.fragment_book_list, container, false);
+        ListView booklistview = layout.findViewById(R.id.booksList);
+        BookListAdapter adapter = new BookListAdapter(parent, books);
+        booklistview.setAdapter(adapter);
+
+        return layout;
     }
 
     @Override
