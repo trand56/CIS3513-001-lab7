@@ -1,6 +1,8 @@
 package temple.edu.bookshelf;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private int id;
     private String title;
     private String author;
@@ -21,7 +23,7 @@ public class Book {
         return this.title;
     }
 
-    public String author(){
+    public String getAuthor(){
         return this.author;
     }
 

@@ -16,12 +16,12 @@ public class BookListAdapter extends BaseAdapter {
     Context context;
     LinearLayout[] entries;
 
-    public BookListAdapter(Context parent, ArrayList<HashMap<String,String>> books){
+    public BookListAdapter(Context parent, ArrayList<Book> books){
         int len = books.size();
         context = parent;
         entries = new LinearLayout[len];
         for(int i = 0; i < books.size(); i++){
-            HashMap<String,String> book = books.get(i);
+            Book book = books.get(i);
             LinearLayout bookEntry = new LinearLayout(parent);
             LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -35,10 +35,10 @@ public class BookListAdapter extends BaseAdapter {
             TextView titleText = new TextView(parent);
             TextView authorText = new TextView(parent);
 
-            titleText.setText(book.get("title"));
+            titleText.setText(book.getTitle());
             titleText.setTypeface(titleText.getTypeface(), Typeface.BOLD);
             titleText.setLayoutParams(param1);
-            authorText.setText(book.get("author"));
+            authorText.setText(book.getAuthor());
 
             bookEntry.addView(titleText);
             bookEntry.addView(authorText);

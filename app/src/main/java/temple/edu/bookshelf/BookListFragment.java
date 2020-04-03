@@ -38,13 +38,13 @@ public class BookListFragment extends Fragment {
     private Context parentContext;
 
     private int length;
-    private ArrayList<HashMap<String,String>> books;
+    private ArrayList<Book> books;
 
     public BookListFragment() {
         // Required empty public constructor
     }
 
-    public static BookListFragment newInstance(ArrayList<HashMap<String,String>> books) {
+    public static BookListFragment newInstance(ArrayList<Book> books) {
         BookListFragment fragment = new BookListFragment();
         Bundle args = new Bundle();
 
@@ -61,7 +61,7 @@ public class BookListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             length = getArguments().getInt("length");
-            books = (ArrayList<HashMap<String,String>>)getArguments().getSerializable("books");
+            books = (ArrayList<Book>)getArguments().getSerializable("books");
 
         }
     }

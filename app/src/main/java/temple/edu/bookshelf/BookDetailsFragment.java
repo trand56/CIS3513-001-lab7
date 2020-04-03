@@ -30,14 +30,14 @@ public class BookDetailsFragment extends Fragment {
     // TODO: Rename and change types of parameters
 
     private Context parent;
-    private HashMap<String,String> book = null;
+    private Book book = null;
 
     public BookDetailsFragment() {
         // Required empty public constructor
     }
 
 
-    public static BookDetailsFragment newInstance(HashMap<String,String> book) {
+    public static BookDetailsFragment newInstance(Book book) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
 
@@ -51,7 +51,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            book = (HashMap<String,String>)getArguments().getSerializable("book");
+            book = (Book)getArguments().getSerializable("book");
         }
     }
 
@@ -64,8 +64,8 @@ public class BookDetailsFragment extends Fragment {
         TextView titleText = layout.findViewById(R.id.title);
         TextView authorText = layout.findViewById(R.id.author);
         if(book != null){
-            titleText.setText(book.get("title"));
-            authorText.setText(book.get("author"));
+            titleText.setText(book.getTitle());
+            authorText.setText(book.getAuthor());
         }
         else{
             titleText.setText("No book selected");
@@ -75,8 +75,8 @@ public class BookDetailsFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void displayBook(HashMap<String,String> b) {
-        System.out.println("TITLE AUTHOR " + b.get("title") + ", " + b.get("author") );
+    public void displayBook(Book b) {
+        System.out.println("TITLE AUTHOR " + b.getTitle() + ", " + b.getAuthor() );
         book = b;
     }
 

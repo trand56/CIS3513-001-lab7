@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
-    private ArrayList<HashMap<String, String>> books;
+    private ArrayList<Book> books;
     private BookListFragment booksFrag;
     private BookDetailsFragment detailFrag;
 
@@ -26,11 +26,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         String[] authors = getResources().getStringArray(R.array.book_authors);
         int authorslen = titles.length;
 
-        books = new ArrayList<HashMap<String, String>>();
+        books = new ArrayList<Book>();
         for (int i = 0; i < titleslen && i < authorslen; i++) {
-            HashMap<String, String> newBook = new HashMap<String, String>();
-            newBook.put("title", titles[i]);
-            newBook.put("author", authors[i]);
+            Book newBook = new Book(i, titles[i], authors[i], null);
             books.add(newBook);
         }
 
