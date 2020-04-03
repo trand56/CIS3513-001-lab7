@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.container1, booksFrag)
+                .replace(R.id.container1, booksFrag)
                 .commit();
         if(findViewById(R.id.container2) != null)
             getSupportFragmentManager()
