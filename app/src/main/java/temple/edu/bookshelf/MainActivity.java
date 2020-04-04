@@ -20,6 +20,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shelf);
 
+    }
+
+
+    public void searchBooks(String query){
         // load books here
         String[] titles = getResources().getStringArray(R.array.book_titles);
         int titleslen = titles.length;
@@ -44,9 +48,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     .beginTransaction()
                     .replace(R.id.container2, detailFrag)
                     .commit();
-
     }
-
 
     @Override
     public void onBookSelected(int index) {
