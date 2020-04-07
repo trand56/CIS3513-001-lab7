@@ -72,16 +72,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     public void searchBooks(String query){
 
-        String[] titles = getResources().getStringArray(R.array.book_titles);
-        int titleslen = titles.length;
-        String[] authors = getResources().getStringArray(R.array.book_authors);
-        int authorslen = titles.length;
-
-        books = new ArrayList<Book>();
-        for (int i = 0; i < titleslen && i < authorslen; i++) {
-            Book newBook = new Book(i, titles[i], authors[i], null);
-            books.add(newBook);
-        }
+        books = loadBooks(query);
 
         booksFrag = BookListFragment.newInstance(books);
         detailFrag = BookDetailsFragment.newInstance(books.get(0));
@@ -96,6 +87,22 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     .beginTransaction()
                     .replace(R.id.container2, detailFrag)
                     .commit();
+    }
+
+    /// Return an array list of Book objects given a String query
+    private ArrayList<Book> loadBooks(String query)
+    {
+        String[] titles = getResources().getStringArray(R.array.book_titles);
+        int titleslen = titles.length;
+        String[] authors = getResources().getStringArray(R.array.book_authors);
+        int authorslen = titles.length;
+
+        ArrayList<Book> bks = new ArrayList<Book>();
+        for (int i = 0; i < titleslen && i < authorslen; i++) {
+            Book newBook = new Book(i, titles[i], authors[i], null);
+            bks.add(newBook);
+        }
+        return bks;
     }
 
     @Override
