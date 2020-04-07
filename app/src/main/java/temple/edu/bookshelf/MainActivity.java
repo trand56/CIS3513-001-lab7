@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .commit();
 
 
-                detailFrag = BookDetailsFragment.newInstance(books.get(curIndex));
+                detailFrag = BookDetailsFragment.newInstance(null);
                 if(findViewById(R.id.container2) != null)
                     getSupportFragmentManager()
                             .beginTransaction()
@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                                 String cover_url = obj.getString("cover_url");
                                 books.add(new Book(Integer.parseInt(book_id), title, author, cover_url));
                             }
-                            if(books != null && books.size() > 0) {
+                            if(books != null) {
                                 booksFrag = BookListFragment.newInstance(books);
-                                detailFrag = BookDetailsFragment.newInstance(books.get(0));
+                                detailFrag = BookDetailsFragment.newInstance(null);
 
                                 getSupportFragmentManager()
                                         .beginTransaction()
