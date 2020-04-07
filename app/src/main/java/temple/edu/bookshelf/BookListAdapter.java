@@ -25,8 +25,8 @@ public class BookListAdapter extends BaseAdapter {
             LinearLayout bookEntry = new LinearLayout(parent);
             LinearLayout.LayoutParams param1 = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    0.50f
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    0.70f
             );
             param1.setMargins(10, 0, 10, 0);
 
