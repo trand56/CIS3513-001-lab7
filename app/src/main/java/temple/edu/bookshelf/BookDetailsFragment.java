@@ -31,6 +31,8 @@ public class BookDetailsFragment extends Fragment {
 
     private Context parent;
     private Book book = null;
+    private TextView titleText;
+    private TextView authorText;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -47,9 +49,13 @@ public class BookDetailsFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //if(savedInstanceState != null){
+        //    book = (Book)savedInstanceState.getSerializable("book");
+        //}
         if (getArguments() != null) {
             book = (Book)getArguments().getSerializable("book");
         }
@@ -61,15 +67,10 @@ public class BookDetailsFragment extends Fragment {
         System.out.println("CREATE VIEW");
         // Inflate the layout for this fragment
         View layout = inflater.inflate(R.layout.fragment_book_details, container, false);
-        TextView titleText = layout.findViewById(R.id.title);
-        TextView authorText = layout.findViewById(R.id.author);
+        titleText = layout.findViewById(R.id.title);
+        authorText = layout.findViewById(R.id.author);
         if(book != null){
-            titleText.setText(book.getTitle());
-            authorText.setText(book.getAuthor());
-        }
-        else{
-            titleText.setText("No book selected");
-            authorText.setText("No book selected");
+            displayBook(book);
         }
         return layout;
     }
@@ -78,6 +79,8 @@ public class BookDetailsFragment extends Fragment {
     public void displayBook(Book b) {
         System.out.println("TITLE AUTHOR " + b.getTitle() + ", " + b.getAuthor() );
         book = b;
+        titleText.setText(b.getTitle());
+        authorText.setText(b.getAuthor());
     }
 
     @Override
