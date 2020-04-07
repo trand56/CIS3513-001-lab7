@@ -62,8 +62,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .addToBackStack(null)
                         .commit();
 
-
-                detailFrag = BookDetailsFragment.newInstance(null);
+                detailFrag = BookDetailsFragment.newInstance(books.size() > 0 ? books.get(curIndex) : null);
                 if(findViewById(R.id.container2) != null)
                     getSupportFragmentManager()
                             .beginTransaction()
