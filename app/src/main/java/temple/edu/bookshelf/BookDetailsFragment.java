@@ -9,7 +9,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 
@@ -33,6 +36,7 @@ public class BookDetailsFragment extends Fragment {
     private Book book = null;
     private TextView titleText;
     private TextView authorText;
+    private ImageView coverImg;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -69,6 +73,7 @@ public class BookDetailsFragment extends Fragment {
         View layout = inflater.inflate(R.layout.fragment_book_details, container, false);
         titleText = layout.findViewById(R.id.title);
         authorText = layout.findViewById(R.id.author);
+        coverImg = layout.findViewById(R.id.bookcover);
         if(book != null){
             displayBook(book);
         }
@@ -81,6 +86,7 @@ public class BookDetailsFragment extends Fragment {
         book = b;
         titleText.setText(b.getTitle());
         authorText.setText(b.getAuthor());
+        Picasso.get().load(b.getCoverURL()).into(coverImg);
     }
 
     @Override
