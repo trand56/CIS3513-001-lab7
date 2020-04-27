@@ -294,6 +294,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         Toast.makeText(this, "PLAY BUTTON CLICK " + curProgress + "/" + b.getDuration(), Toast.LENGTH_SHORT).show();
         if(audiobookService != null)
         {
+            isPlaying = true;
             if(b.getId() != curId) {
                 curId = b.getId();
                 seekBar.setProgress(0);
