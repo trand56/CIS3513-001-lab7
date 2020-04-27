@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -41,9 +42,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     private ArrayList<Book> books;
     private BookListFragment booksFrag;
     private BookDetailsFragment detailFrag;
-    private int curIndex;
+    private int curIndex = -1;
     private int curProgress;
-    private int isPlaying;
+    private int curId;
+    private boolean isPlaying;
 
     RequestQueue requestQueue;
 
@@ -59,7 +61,13 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     private final Handler progressHandler = new Handler(){
         @Override
         public void handleMessage(Message arg){
-            curProgress = ((AudiobookService.BookProgress) arg.obj).getProgress();
+            if(isPlaying) {
+                AudiobookService.BookProgress prog = ((AudiobookService.BookProgress) arg.obj);
+                curProgress = prog.getProgress();
+                curId = prog.getBookId();
+                seekBar.setProgress((int) (((float) curProgress / (float) books.get(curId).getDuration()) * 100));
+                Log.i("[YOYO]", "Playing");
+            }
         }
     };
 
@@ -70,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             connected = true;
             audiobookService = (AudiobookService.MediaControlBinder) service;
             audiobookService.setProgressHandler(progressHandler);
+            if(isPlaying)
+                onPlay(books.get(curIndex));
         }
 
         @Override
@@ -103,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Rewind Button Pressed", Toast.LENGTH_SHORT).show();
+                stopAudio();
             }
         });
 
@@ -110,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             @Override
             public void onClick(View v) {
                 Toast.makeText(MainActivity.this, "Pause Button Pressed", Toast.LENGTH_SHORT).show();
+                pauseAudio();
             }
         });
 
@@ -126,9 +138,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                Toast.makeText(MainActivity.this, "Value changed to " + seekBar.getProgress(), Toast.LENGTH_SHORT).show();
+                progressChanged();
             }
         });
+
 
 
         if(savedInstanceState != null)
@@ -153,6 +166,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     onBookSelected(curIndex);
 
                 curProgress = savedInstanceState.getInt("progress", 0);
+                curId = savedInstanceState.getInt("id", books.get(curIndex).getId());
+                isPlaying = savedInstanceState.getBoolean("playing");
+
             }
         }
 
@@ -176,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         {
             outState.putSerializable("books", books);
             outState.putInt("index", curIndex);
+            outState.putInt("id", curId);
             outState.putInt("progress", curProgress);
             outState.putBoolean("playing", audiobookService.isPlaying());
         }
@@ -238,15 +255,21 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     public void stopAudio(){
-
+        audiobookService.stop();
+        curProgress = 0;
+        seekBar.setProgress(curProgress);
     }
 
     public void pauseAudio(){
-
+        audiobookService.pause();
     }
 
     public void progressChanged(){
-
+        float percent = ((float)((SeekBar)findViewById(R.id.seekBar)).getProgress()/100f);
+        if(curIndex != -1) {
+            curProgress  =  (int) (percent * books.get(curIndex).getDuration());
+            audiobookService.seekTo(curProgress);
+        }
     }
 
     @Override
@@ -262,19 +285,23 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         } else {
             detailFrag.displayBook(books.get(index));
         }
-
-        onPlay(books.get(index));
     }
 
     @Override
     public void onPlay(Book b){
-        Toast.makeText(this, "PLAY BUTTON CLICK", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "PLAY BUTTON CLICK " + curProgress + "/" + b.getDuration(), Toast.LENGTH_SHORT).show();
         if(audiobookService != null)
         {
-            if(audiobookService.isPlaying()){
-                audiobookService.stop();
+            if(b.getId() != curId) {
+                curId = b.getId();
+                seekBar.setProgress(0);
+                audiobookService.play(b.getId(), 0);
             }
-            audiobookService.play(b.getId(), b.getDuration());
+            else{
+                seekBar.setProgress((int)(((float)curProgress / (float)b.getDuration()) * 100));
+                audiobookService.play(b.getId(), curProgress);
+
+            }
         }
     }
 }
