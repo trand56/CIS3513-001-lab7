@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -37,6 +38,7 @@ public class BookDetailsFragment extends Fragment {
     private TextView titleText;
     private TextView authorText;
     private ImageView coverImg;
+    private ImageButton playButton;
 
     public BookDetailsFragment() {
         // Required empty public constructor
@@ -74,9 +76,21 @@ public class BookDetailsFragment extends Fragment {
         titleText = layout.findViewById(R.id.title);
         authorText = layout.findViewById(R.id.author);
         coverImg = layout.findViewById(R.id.bookcover);
+        playButton = layout.findViewById(R.id.playButton);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((BookInteractionListener)parent).onPlay(book);
+            }
+        });
+
         if(book != null){
             displayBook(book);
         }
+
+
+
         return layout;
     }
 
@@ -92,12 +106,21 @@ public class BookDetailsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        parent = context;
+        if (context instanceof BookInteractionListener) {
+            parent = context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         parent = null;
+    }
+
+    interface BookInteractionListener{
+        void onPlay(Book b);
     }
 }

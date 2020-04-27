@@ -1,7 +1,16 @@
 package temple.edu.bookshelf;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +32,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedListener {
+import edu.temple.audiobookplayer.AudiobookService;
+
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedListener, BookDetailsFragment.BookInteractionListener {
 
     // List of Books. Books represented as HashMaps
     // HashMap: <title, author>
@@ -31,8 +42,42 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     private BookListFragment booksFrag;
     private BookDetailsFragment detailFrag;
     private int curIndex;
+    private int curProgress;
+    private int isPlaying;
 
     RequestQueue requestQueue;
+
+    private Intent audioServiceIntent;
+    private ImageButton rewindButton; // acts as a stop button
+    private ImageButton pauseButton; // pauses audio
+    private SeekBar seekBar; // seek bar
+
+    private boolean connected;
+
+
+    AudiobookService.MediaControlBinder audiobookService;
+    private final Handler progressHandler = new Handler(){
+        @Override
+        public void handleMessage(Message arg){
+            curProgress = ((AudiobookService.BookProgress) arg.obj).getProgress();
+        }
+    };
+
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            connected = true;
+            audiobookService = (AudiobookService.MediaControlBinder) service;
+            audiobookService.setProgressHandler(progressHandler);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            connected = false;
+            audiobookService = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +94,42 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     searchBooks(searchBox.getText().toString());
             }
         });
+
+        rewindButton = findViewById(R.id.rewindButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        seekBar = findViewById(R.id.seekBar);
+
+        rewindButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Rewind Button Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        pauseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "Pause Button Pressed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Toast.makeText(MainActivity.this, "Value changed to " + seekBar.getProgress(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         if(savedInstanceState != null)
         {
@@ -68,8 +149,24 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                             .beginTransaction()
                             .replace(R.id.container2, detailFrag)
                             .commit();
+                else
+                    onBookSelected(curIndex);
+
+                curProgress = savedInstanceState.getInt("progress", 0);
             }
         }
+
+        // Make audio book player service and binds it
+        //AudiobookService audioBook = new AudiobookService();
+        audioServiceIntent = new Intent(MainActivity.this, AudiobookService.class);
+        bindService(audioServiceIntent, serviceConnection, BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unbindService(serviceConnection);
     }
 
     @Override
@@ -79,6 +176,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         {
             outState.putSerializable("books", books);
             outState.putInt("index", curIndex);
+            outState.putInt("progress", curProgress);
+            outState.putBoolean("playing", audiobookService.isPlaying());
         }
     }
 
@@ -106,7 +205,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                                 String title = obj.getString("title");
                                 String author = obj.getString("author");
                                 String cover_url = obj.getString("cover_url");
-                                books.add(new Book(Integer.parseInt(book_id), title, author, cover_url));
+                                String duration = obj.getString("duration");
+                                books.add(new Book(Integer.parseInt(book_id), title, author, cover_url, Integer.parseInt(duration)));
                             }
                             if(books != null) {
                                 booksFrag = BookListFragment.newInstance(books);
@@ -135,20 +235,18 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     }
                 });
         requestQueue.add(req);
-        /*
-        String[] titles = getResources().getStringArray(R.array.book_titles);
-        int titleslen = titles.length;
-        String[] authors = getResources().getStringArray(R.array.book_authors);
-        int authorslen = titles.length;
+    }
 
-        ArrayList<Book> bks = new ArrayList<Book>();
-        for (int i = 0; i < titleslen && i < authorslen; i++) {
-            Book newBook = new Book(i, titles[i], authors[i], null);
-            bks.add(newBook);
-        }
-        return bks;
+    public void stopAudio(){
 
-         */
+    }
+
+    public void pauseAudio(){
+
+    }
+
+    public void progressChanged(){
+
     }
 
     @Override
@@ -163,7 +261,20 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     .commit();
         } else {
             detailFrag.displayBook(books.get(index));
+        }
 
+        onPlay(books.get(index));
+    }
+
+    @Override
+    public void onPlay(Book b){
+        Toast.makeText(this, "PLAY BUTTON CLICK", Toast.LENGTH_SHORT).show();
+        if(audiobookService != null)
+        {
+            if(audiobookService.isPlaying()){
+                audiobookService.stop();
+            }
+            audiobookService.play(b.getId(), b.getDuration());
         }
     }
 }
