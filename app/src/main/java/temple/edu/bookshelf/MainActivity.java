@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 AudiobookService.BookProgress prog = ((AudiobookService.BookProgress) arg.obj);
                 curProgress = prog.getProgress();
                 curId = prog.getBookId();
-                seekBar.setProgress((int) (((float) curProgress / (float) books.get(curId).getDuration()) * 100));
+                seekBar.setProgress((int) (((float) curProgress / (float) books.get(curIndex).getDuration()) * 100));
                 Log.i("[YOYO]", "Playing");
             }
         }
@@ -256,12 +256,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     public void stopAudio(){
         audiobookService.stop();
+        isPlaying = false;
         curProgress = 0;
         seekBar.setProgress(curProgress);
     }
 
     public void pauseAudio(){
         audiobookService.pause();
+        isPlaying = false;
     }
 
     public void progressChanged(){
@@ -298,9 +300,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 audiobookService.play(b.getId(), 0);
             }
             else{
-                seekBar.setProgress((int)(((float)curProgress / (float)b.getDuration()) * 100));
-                audiobookService.play(b.getId(), curProgress);
-
+                if(!audiobookService.isPlaying()) {
+                    seekBar.setProgress((int) (((float) curProgress / (float) b.getDuration()) * 100));
+                    audiobookService.play(b.getId(), curProgress);
+                }
+                else{
+                    seekBar.setProgress((int) (((float) curProgress / (float) b.getDuration()) * 100));
+                    audiobookService.seekTo(curProgress);
+                }
             }
         }
     }
