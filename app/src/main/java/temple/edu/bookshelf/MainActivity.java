@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         rewindButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Rewind Button Pressed", Toast.LENGTH_SHORT).show();
                 stopAudio();
             }
         });
@@ -120,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(MainActivity.this, "Pause Button Pressed", Toast.LENGTH_SHORT).show();
                 pauseAudio();
             }
         });
@@ -133,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                pauseAudio();
             }
 
             @Override
@@ -270,12 +268,19 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         float percent = ((float)((SeekBar)findViewById(R.id.seekBar)).getProgress()/100f);
         if(curIndex != -1) {
             curProgress  =  (int) (percent * books.get(curIndex).getDuration());
-            audiobookService.seekTo(curProgress);
+            audiobookService.play(curId, curProgress);
         }
     }
 
     @Override
     public void onBookSelected(int index) {
+
+        audiobookService.stop();
+        isPlaying = false;
+
+        curProgress = 0;
+        seekBar.setProgress(curProgress);
+
         curIndex = index;
         if (findViewById(R.id.container2) == null) {
             BookDetailsFragment newDetail = BookDetailsFragment.newInstance(books.get(index));
@@ -291,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     @Override
     public void onPlay(Book b){
-        Toast.makeText(this, "PLAY BUTTON CLICK " + curProgress + "/" + b.getDuration(), Toast.LENGTH_SHORT).show();
         if(audiobookService != null)
         {
             isPlaying = true;
